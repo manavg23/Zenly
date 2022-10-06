@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> LOGIN PAGE</title>
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+<div class="bg">
+<div class="card">
+<div class="inner-box" id="card">
+<div class="card-front">
+   	<h2>LOGIN</h2>
+   	<form>
+   	     <input type="email" class="input-box" placeholder="Your Email Id" required>
+   	     <input type="password" class="input-box" placeholder="Password" required>
+            <button class="submit-btn"><a href="Dashboard.html">Submit</a></button>
+   	     <input type="checkbox"><span>Remember Me</span>
+   	</form>	
+   	<button type="button" class="btn" onclick="openRegister()">I'm new here</button>
+   	<a href="">Forget Password</a>
+</div>
+<div class="card-back">
+	<h2>REGISTER</h2>
+   	<form>
+   		<input type="text" class="input-box" placeholder="Your Name" required>
+   	     <input type="email" class="input-box" placeholder="Your Email Id" required>
+   	     <input type="password" class="input-box" placeholder="Password" required>
+   	     <a href="Dashboard.html"><button class="submit-btn">Submit</button></a>
+   	     <input type="checkbox"><span>Remember Me</span>
+   	</form>	
+   	<button type="button" class="btn" onclick="openLogin()">I have an account</button>
+   	<a href="">Forget Password</a>
+</div>
+        </div>
+      </div> 
+    </div>     
+    <script src="login.js"></script> 
+</body>
+</html>

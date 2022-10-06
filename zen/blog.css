@@ -1,0 +1,142 @@
+/* .heading{
+    padding: 30px;
+  font-size: 40px;
+  text-align: center;
+}
+.titles{
+    text-align: center;
+}
+.gridcontainer1{
+    background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+.intro{
+    background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+.gridcontainer2{
+    background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+.gridcontainer3{
+    background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+}
+.gridcontainer4{
+    background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+} */
+
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial;
+    padding: 20px;
+    background: linear-gradient(91.7deg, rgb(50, 25, 79) -4.3%, rgb(122, 101, 149) 101.8%);
+  }
+  
+  /* Header/Blog Title */
+  .header {
+    padding: 30px;
+    font-size: 40px;
+    text-align: center;
+    
+    background: white;
+    background-image: url(header.jpg);
+    background-repeat: no-repeat;
+    background-size: 1500px, 50px;
+  }
+  
+  /* Create two unequal columns that floats next to each other */
+  /* Left column */
+  .leftcolumn { 
+    float: left;
+    width: 75%;
+  }
+  
+  /* Right column */
+  .rightcolumn {
+    float: left;
+    width: 25%;
+    padding-left: 20px;
+  }
+  
+  /* Fake image */
+  .fakeimg {
+    background-image: url(HealthyFood.jpeg);
+    background-color: #aaa;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding: 20px;
+  }
+  
+  /* Add a card effect for articles */
+  .card {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Footer */
+  .footer {
+    padding: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    background: rgb(255, 255, 255);
+    margin-top: 20px;
+  }
+  
+  /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 800px) {
+    .leftcolumn, .rightcolumn { 
+      width: 100%;
+      padding: 0;
+    }
+  }
+
+  .fakeimg1{
+    background-image: url(breakfast.jpg);
+    width: 100%;
+    padding: 20px;
+  }
+
+  .fakeimg2{
+    background-image: url(lunch.jpeg);
+    
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .fakeimg3{
+    background-image: url(Dinner.jpg);
+    width: 100%;
+    padding: 20px;
+  }
+ 
+  .HeaderContainer{
+    background-color: black;
+    opacity: 80%;
+    color: white;
+  }
