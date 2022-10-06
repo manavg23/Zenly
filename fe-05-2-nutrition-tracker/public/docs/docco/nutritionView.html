@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>nutritionView.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="autocompleteSearch.html">
+                  autocompleteSearch.js
+                </a>
+              
+                
+                <a class="source" href="foodSearch.html">
+                  foodSearch.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTracker.html">
+                  nutritionTracker.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearch.html">
+                  recipeSearch.js
+                </a>
+              
+                
+                <a class="source" href="autocomplete.html">
+                  autocomplete.js
+                </a>
+              
+                
+                <a class="source" href="food.html">
+                  food.js
+                </a>
+              
+                
+                <a class="source" href="nutrition.html">
+                  nutrition.js
+                </a>
+              
+                
+                <a class="source" href="recipe.html">
+                  recipe.js
+                </a>
+              
+                
+                <a class="source" href="namespace.html">
+                  namespace.js
+                </a>
+              
+                
+                <a class="source" href="router.html">
+                  router.js
+                </a>
+              
+                
+                <a class="source" href="templates.html">
+                  templates.js
+                </a>
+              
+                
+                <a class="source" href="foodSearchView.html">
+                  foodSearchView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionEditorView.html">
+                  nutritionEditorView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTrackerView.html">
+                  nutritionTrackerView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionView.html">
+                  nutritionView.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearchView.html">
+                  recipeSearchView.js
+                </a>
+              
+                
+                <a class="source" href="startView.html">
+                  startView.js
+                </a>
+              
+                
+                <a class="source" href="tabView.html">
+                  tabView.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>nutritionView.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/** Nutrition View
+ * @namespace  nt.Views
+ * @class nt.Views.Nutrition
+ * @memberof! &lt;global&gt;
+ * @extends Backbone.View */</span>
+nt.Views.Nutrition = Backbone.View.extend(<span class="hljs-comment">/** @lends nt.Views.Nutrition# */</span>{
+
+    el: <span class="hljs-string">'#app'</span>,
+
+    buttonsTemplate: Handlebars.Templates.buttons,
+
+    events: {
+        <span class="hljs-string">'click .item-nutrition'</span>: <span class="hljs-string">'openNutrition'</span>,
+        <span class="hljs-string">'click #nutrition-close'</span>: <span class="hljs-string">'closeNutrition'</span>,
+        <span class="hljs-string">'click #nutrition-add'</span>: <span class="hljs-string">'addFood'</span>,
+        <span class="hljs-string">'click #nutrition-remove'</span>: <span class="hljs-string">'removeFood'</span>,
+        <span class="hljs-string">'click #nutrition-track'</span>: <span class="hljs-string">'openTrackerView'</span>
+    },
+
+    <span class="hljs-comment">/** Setup `this` context, DOM refs, variables, listeners and load google chart api */</span>
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'itemSuccess'</span>, <span class="hljs-string">'itemError'</span>);
+
+        <span class="hljs-keyword">this</span>.$nutrition = $(<span class="hljs-string">'#nutrition'</span>);
+        <span class="hljs-keyword">this</span>.$nutritionTop = $(<span class="hljs-string">'#nutrition-top'</span>);
+        <span class="hljs-keyword">this</span>.$nutritionMenu = $(<span class="hljs-string">'#nutrition-button-menu'</span>);
+        <span class="hljs-keyword">this</span>.$nutritionResults = $(<span class="hljs-string">'#nutrition-results'</span>);
+        <span class="hljs-keyword">this</span>.$nLabel = $(<span class="hljs-string">'#nlabel'</span>);
+        <span class="hljs-keyword">this</span>.trackedItem = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.gchart = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.gformat = <span class="hljs-literal">null</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Load the Visualization API and the corechart package.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        google.charts.load(<span class="hljs-string">'current'</span>, {<span class="hljs-string">'packages'</span>:[<span class="hljs-string">'corechart'</span>]});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Close the Nutrition view when another search is run</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.listenTo(nt.Plugin.Instance, <span class="hljs-string">'selected'</span>, <span class="hljs-keyword">this</span>.closeNutrition);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Update the Nutrition view model and tracking status when a food is saved</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'foodsaved'</span>, <span class="hljs-keyword">this</span>.updateView);
+
+    }, <span class="hljs-comment">// initialize</span>
+
+    <span class="hljs-comment">/** Display the button menu, pie chart, and nutrition label */</span>
+    render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Display button menu</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.displayMenu();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Display pie chart</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.displayChart();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Display nutrition label</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.displayNutrition();
+
+    }, <span class="hljs-comment">// render</span>
+
+    <span class="hljs-comment">/** Display the nutrition view */</span>
+    showColumn: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.$nutrition.removeClass(<span class="hljs-string">'hideColumn'</span>);
+    }, <span class="hljs-comment">// showColumn</span>
+
+    <span class="hljs-comment">/** Hide the nutrition view */</span>
+    hideColumn: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.$nutrition.addClass(<span class="hljs-string">'hideColumn'</span>);
+    }, <span class="hljs-comment">// hideColumn</span>
+
+    <span class="hljs-comment">/** Get the food item id and highlight it in the search view */</span>
+    openNutrition: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-keyword">var</span> elem = $(e.target);
+        <span class="hljs-keyword">var</span> id   = elem.data(<span class="hljs-string">'item'</span>);
+
+        e.preventDefault();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Close if already open</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.closeNutrition();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Highlight selected item</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        elem.closest(<span class="hljs-string">'.item'</span>).css(<span class="hljs-string">'background-color'</span>, <span class="hljs-string">'#b8dec0'</span>).addClass(<span class="hljs-string">'highlight'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Show second column</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.showColumn();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Get item data from localStorage or from the API</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.checkItem(id);
+
+    }, <span class="hljs-comment">// openNutrition</span>
+
+    <span class="hljs-comment">/** Check if the item selected is already in the tracker */</span>
+    checkItem: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">itemId</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Check if this item is already being tracked</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.trackedItem = nt.Collections.tracker.get(itemId);
+
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.trackedItem) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Copy the data from the tracker</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.model.set( <span class="hljs-keyword">this</span>.trackedItem.toJSON() );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Display the item</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.itemSuccess();
+        } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Get nutrition data from API using the item id</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.getNutrition(itemId);
+        }
+
+    }, <span class="hljs-comment">// checkItem</span>
+
+    <span class="hljs-comment">/** Remove highlight, clear nutrition view, and hide the view */</span>
+    closeNutrition: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Remove highlight from selected item</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.highlight'</span>).removeAttr(<span class="hljs-string">'style'</span>).removeClass(<span class="hljs-string">'highlight'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Clear chart and nutrition label</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nutritionResults.find(<span class="hljs-string">'figure'</span>).html(<span class="hljs-string">''</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Hide second column</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.hideColumn();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Restore hidden icons</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.tracked-delete'</span>).show();
+
+    }, <span class="hljs-comment">// closeNutrition</span>
+
+    <span class="hljs-comment">/** AJAX success callback */</span>
+    itemSuccess: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model, response</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Render the nutrition info</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.render();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Make the Search and Nutrition columns equal heights</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.row'</span>).eqHeights({child:<span class="hljs-string">'.eqHeights'</span>});
+
+    }, <span class="hljs-comment">// itemSuccess</span>
+
+    <span class="hljs-comment">/** AJAX error callback */</span>
+    itemError: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model, errorResponse</span>) </span>{
+        <span class="hljs-keyword">var</span> status = errorResponse.status;
+        <span class="hljs-keyword">var</span> statusText = errorResponse.statusText;
+        <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'&lt;div class="alert alert-danger"&gt;Nutritionix item request failed: &lt;br&gt;'</span> +
+                   status + <span class="hljs-string">' : '</span> + statusText + <span class="hljs-string">'&lt;/div&gt;'</span>;
+        <span class="hljs-keyword">this</span>.$nutritionMenu.html(msg);
+
+    }, <span class="hljs-comment">// itemError</span>
+
+    <span class="hljs-comment">/** Get food item details from Nutritionix */</span>
+    getNutrition: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">itemID</span>) </span>{
+        <span class="hljs-keyword">var</span> parameters = {
+            <span class="hljs-string">'id'</span>: itemID,
+            <span class="hljs-string">'appId'</span>: <span class="hljs-string">'53242d79'</span>,
+            <span class="hljs-string">'appKey'</span>: <span class="hljs-string">'82289438a16ec7b92cdcf5ad054159c4'</span>
+        };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Display loading animation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nutritionMenu.html(nt.preloader);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Clear the model</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.model.clear();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Make GET request to Nutritionix</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.model.fetch({
+            data: $.param(parameters),
+            success: <span class="hljs-keyword">this</span>.itemSuccess,
+            error: <span class="hljs-keyword">this</span>.itemError
+        });
+
+    }, <span class="hljs-comment">// getNutrition</span>
+
+    <span class="hljs-comment">/** Display pie chart using fat, carbs, and protein values */</span>
+    displayChart: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> fat = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'valueTotalFat'</span>);
+        <span class="hljs-keyword">var</span> carbs = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'valueTotalCarb'</span>);
+        <span class="hljs-keyword">var</span> protein = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'valueProteins'</span>);
+
+        <span class="hljs-keyword">var</span> data = google.visualization.arrayToDataTable([
+            [<span class="hljs-string">'Nutrient'</span>, <span class="hljs-string">'Value'</span>],
+            [<span class="hljs-string">'Fat'</span>, fat],
+            [<span class="hljs-string">'Carbs'</span>, carbs],
+            [<span class="hljs-string">'Protein'</span>, protein]
+        ]);
+
+        <span class="hljs-keyword">var</span> options = {
+            width: <span class="hljs-number">280</span>,
+            height: <span class="hljs-number">140</span>,
+            backgroundColor: <span class="hljs-string">'#b8dec0'</span>,
+            sliceVisibilityThreshold: <span class="hljs-number">0</span>
+        };
+
+        <span class="hljs-keyword">var</span> notZero = (<span class="hljs-built_in">parseFloat</span>(fat + carbs + protein) !== <span class="hljs-number">0</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Don’t draw a chart if all the values are zero</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(notZero) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Add ‘g’ for grams unit to the values</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.gformat)
+                <span class="hljs-keyword">this</span>.gformat = <span class="hljs-keyword">new</span> google.visualization.NumberFormat({suffix: <span class="hljs-string">'g'</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Clear chart.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.gchart) <span class="hljs-keyword">this</span>.gchart.clearChart();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Instantiate chart.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.gchart = <span class="hljs-keyword">new</span> google.visualization.PieChart(
+                    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'gchart'</span>)
+                );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Apply formatter to second column</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.gformat.format(data, <span class="hljs-number">1</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Draw chart.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">this</span>.gchart.draw(data, options);
+        }
+
+    }, <span class="hljs-comment">// displayChart</span>
+
+    <span class="hljs-comment">/** Use label plugin to format and display nutritional values */</span>
+    displayNutrition: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Reference Example #2
+<a href="http://dev2.nutritionix.com/html/label-jquery-plugin/demo/demo.html">http://dev2.nutritionix.com/html/label-jquery-plugin/demo/demo.html</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Reset the element and previous event handlers</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nLabel.html(<span class="hljs-string">''</span>);
+        <span class="hljs-keyword">this</span>.$nLabel.undelegate();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Activate Nutrition Label jQuery Plugin by Nutritionix</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nLabel.nutritionLabel(<span class="hljs-keyword">this</span>.model.toJSON());
+
+    }, <span class="hljs-comment">// displayNutrition</span>
+
+    <span class="hljs-comment">/** Display if food item is being tracked and button options */</span>
+    displayMenu: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> isTracked = <span class="hljs-literal">false</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Clear button menu container</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nutritionMenu.html(<span class="hljs-string">''</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Set tracking flag</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.trackedItem) isTracked = <span class="hljs-literal">true</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Add the button menu html</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nutritionMenu.append(<span class="hljs-keyword">this</span>.buttonsTemplate({
+            tracking: isTracked
+        }));
+
+    }, <span class="hljs-comment">// displayMenu</span>
+
+    <span class="hljs-comment">/** Open editor view for food */</span>
+    addFood: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Create an editor view with the nutrition data model</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> editorView = <span class="hljs-keyword">new</span> nt.Views.Editor({model: <span class="hljs-keyword">this</span>.model});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Render the editor view and append its element to the nutrition view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$nutrition.append( editorView.render().renderDatePicker().el );
+
+    }, <span class="hljs-comment">// addFood</span>
+
+    <span class="hljs-comment">/** Destroy food model from the tracker collection using the id */</span>
+    removeFood: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> id = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'id'</span>);
+        <span class="hljs-keyword">var</span> food = nt.Collections.tracker.get(id);
+        food.destroy();
+        <span class="hljs-keyword">this</span>.trackedItem = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.displayMenu();
+
+    }, <span class="hljs-comment">// removeFood</span>
+
+    <span class="hljs-comment">/** When the 'foodsaved' event occurs, update the view's model and tracker status */</span>
+    updateView: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> itemId = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'id'</span>);
+        <span class="hljs-keyword">var</span> foodAttributes = nt.Collections.tracker.get(itemId).toJSON();
+        <span class="hljs-keyword">this</span>.model.set(foodAttributes);
+        <span class="hljs-keyword">this</span>.displayNutrition();
+        <span class="hljs-keyword">this</span>.trackedItem = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">this</span>.displayMenu();
+
+    }, <span class="hljs-comment">// updateView</span>
+
+    <span class="hljs-comment">/** If the item is being tracked, clicking the tracker status will open the tracker view */</span>
+    openTrackerView: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.closeNutrition();
+        $(<span class="hljs-string">'#tab2'</span>).trigger(<span class="hljs-string">'click'</span>);
+
+    } <span class="hljs-comment">// openTrackerView</span>
+
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

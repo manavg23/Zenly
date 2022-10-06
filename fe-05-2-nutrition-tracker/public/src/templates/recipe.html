@@ -1,0 +1,19 @@
+    {{#each recipes}}
+    <div class="recipe-item">
+      <h4>{{recipeTitle}}</h4>
+      <div class="r-container">
+        <div class="r-image">
+          <img class="thumb" src="{{recipeImage}}" alt="{{recipeTitle}}">
+        </div>
+        <div class="r-text">
+          <img class="icon" src="{{siteIcon}}" alt="{{siteTitle}}">
+          <a href="{{siteLink}}" target="_blank">{{siteTitle}}</a>
+          <h6>{{numCalories}} Calories Per Serving</h6>
+          <h6>{{numIngredients}} Ingredients</h6>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+    <footer class="logo">
+      <a href="https://developer.edamam.com" target="_blank"><img src="images/edamam.png" alt="Powered By Edamam"></a>
+    </footer>

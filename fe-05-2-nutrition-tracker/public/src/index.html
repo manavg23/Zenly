@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nutrition Tracker</title>
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <!-- build:css css/styles.min.css -->
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/bootstrap.css" rel="stylesheet">
+  
+  <link href="css/bootstrap-datetimepicker.css" rel="stylesheet">
+  <link href="css/nutritionLabel.css" rel="stylesheet">
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "200bd2ee-a05f-4965-bc76-d610b24061a8",
+      allowLocalhostAsSecureOrigin: true,
+    });
+  });
+</script>
+  <!-- endbuild -->
+</head>
+<body>
+  <!-- NUTRITION TRACKER -->
+  <div class="container no-padding">
+
+    <!-- App start -->
+    <div id="start-screen" >
+      <div class="col-xs-12 center-block">
+      
+      
+      
+      <button type="button" class="btn btn-success main-button">Start App</button>
+      </div>
+    </div>
+
+    <!-- App main -->
+    <main id="app" class="container-fluid">
+
+      <!-- Column 1 -->
+      <section class="col-xs-6 col-centered eqHeights">
+        <!-- Nav  tabs -->
+        <ul id="app-tabs" class="nav nav-tabs">
+          <li role="presentation" class="active"><a id="tab1" href="#search">Search</a></li>
+          <li role="presentation"><a id="tab2" href="#tracker">Tracker</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Search pane -->
+          <div role="tabpanel" class="tab-pane active" id="search">
+            <div id="search-top">
+              <header>
+                <h3>Food Search</h3>
+                <span class="btn-group">
+                  <button type="button" id="search-help" title="Help">
+                    <i class="glyphicon glyphicon-question-sign"></i>
+                  </button>
+                </span>
+              </header>
+              <!-- Search help text -->
+              <div class="alert alert-info" id="search-help-text">
+                <button type="button" class="close" aria-label="Close">
+                  <span aria-hidden="true" class="glyphicon glyphicon-remove-circle"></span>
+                </button>
+                <h4><i class="glyphicon glyphicon-question-sign"></i> Help</h4>
+                <b>Search with autocomplete</b>
+                <ol>
+                  <li>While typing a drop menu with food suggestions will display.</li>
+                  <li>Select an option to search.</li>
+                </ol>
+                <b>Close the autocomplete</b>
+                <ol>
+                  <li>Press Esc or</li>
+                  <li>Click outside the search box or</li>
+                  <li>Click the <i class="glyphicon glyphicon-remove-circle"></i> clear button</li>
+                </ol>
+              </div>
+              <!-- Search box -->
+              <form id="search-suggest" autocomplete="off"></form>
+            </div><!-- /#search-top -->
+            <div id="search-results"></div>
+            <div id="recipe-top">
+              <h3>Recipe Suggestions</h3>
+              <span id="recipe-close" class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+            <div id="recipe-results"></div>
+          </div><!-- /#search -->
+
+          <!-- Tracker pane -->
+          <div role="tabpanel" class="tab-pane" id="tracker">
+            <div id="tracker-top">
+              <header>
+                <h3>Nutrition Tracker</h3>
+                <!-- Tracker options -->
+                <div class="btn-group">
+                  <button id="dtDisplay" class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Options">
+                    <i class="glyphicon glyphicon-cog"></i>
+                  </button>
+                  <ul class="dropdown-menu options">
+                    <li><a id="optDate" href="#date">Display by date</a></li>
+                    <li><a id="optAll" href="#all">Display all</a></li>
+                  </ul>
+                </div>
+              </header>
+              <!-- Tracker date picker -->
+              <div id="dtContainer">
+                <i id="dtBack" class="glyphicon glyphicon-triangle-left"></i>
+                <input id="dtPicker" class="btn btn-default btn-xs" type="text">
+                <i id="dtForward" class="glyphicon glyphicon-triangle-right"></i>
+              </div>
+            </div><!-- /#tracker-top -->
+            <div id="tracker-results">
+              <p id="track_content">No foods are being tracked.</p>
+              <p id="track_content">Do a search and add something!</p>
+            </div>
+          </div><!-- /#tracker -->
+        </div><!-- /.tab-content -->
+      </section><!-- /.col-xs-6 -->
+
+      <!-- Column 2 -->
+      <aside id="nutrition" class="col-xs-6 col-centered vtop hideColumn eqHeights overlayColumn">
+        <!-- Nutrition info -->
+        <div id="nutrition-button-menu"></div>
+        <div id="nutrition-results" class="flex-container">
+          <div class="flex-item">
+            <!-- Chart -->
+            <figure id="gchart"></figure>
+            <br>
+            <!-- Nutrition label -->
+            <figure id="nlabel"></figure>
+          </div><!-- /.flex-item -->
+        </div><!-- /#nutrition-results -->
+      </aside><!-- /.col-xs-6 -->
+
+    </main>
+  </div><!-- /.container -->
+
+  <!-- TEMPLATES see src/templates directory -->
+
+  <!-- SCRIPTS -->
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <!-- build:js js/lib/lib.min.js -->
+  <script src="js/lib/es6-polyfill.min.js"></script>
+  <script src="js/lib/moment.min.js"></script>
+  <script src="js/lib/bootstrap.min.js"></script>
+  <script src="js/lib/bootstrap-datetimepicker.min.js"></script>
+  <script src="js/lib/underscore-min.js"></script>
+  <script src="js/lib/backbone-min.js"></script>
+  <script src="js/lib/backbone.localStorage-min.js"></script>
+  <script src="js/lib/backbone.typeahead.min.js"></script>
+  <script src="js/lib/eqHeights.min.js"></script>
+  <script src="js/lib/handlebars.runtime.min.js"></script>
+  <script src="js/lib/nutritionLabel-min.js"></script>
+  <!-- endbuild -->
+  <!-- build:js js/nutritionTracker.min.js -->
+  <script src="js/namespace.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/models/food.js"></script>
+  <script src="js/models/recipe.js"></script>
+  <script src="js/models/nutrition.js"></script>
+  <script src="js/models/autocomplete.js"></script>
+  <script src="js/collections/foodSearch.js"></script>
+  <script src="js/collections/recipeSearch.js"></script>
+  <script src="js/collections/nutritionTracker.js"></script>
+  <script src="js/collections/autocompleteSearch.js"></script>
+  <script src="js/views/startView.js"></script>
+  <script src="js/views/tabView.js"></script>
+  <script src="js/views/foodSearchView.js"></script>
+  <script src="js/views/recipeSearchView.js"></script>
+  <script src="js/views/nutritionView.js"></script>
+  <script src="js/views/nutritionTrackerView.js"></script>
+  <script src="js/views/nutritionEditorView.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/app.js"></script>
+  <!-- endbuild -->
+</body>
+</html>

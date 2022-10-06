@@ -1,0 +1,49 @@
+    <div id="editor-top">
+      <h3>Food Summary</h3>
+      <span id="foodClose" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+    <br>
+    <form>
+      <div class="input-group date" id="dateTimePicker">
+        <span class="input-group-addon">Track Date</span>
+        <input type="text" class="form-control" id="foodTrackDate" value="{{trackDate}}">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon">Name</span>
+        <input type="text" class="form-control" id="foodName" value="{{itemName}}">
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon calories-addon">Calories</span>
+        <input disabled type="text" class="form-control" id="foodCalories" value="{{valueCalories}} kcal">
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon fat-addon">Fat</span>
+        <input disabled type="text" class="form-control" id="foodFat" value="{{valueTotalFat}} g">
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon carbs-addon">Carbohydrates</span>
+        <input disabled type="text" class="form-control" id="foodCarbs" value="{{valueTotalCarb}} g">
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon protein-addon">Protein</span>
+        <input disabled type="text" class="form-control" id="foodProtein" value="{{valueProteins}} g">
+      </div>
+      <br>
+      <div class="input-group">
+        <span class="input-group-addon serving-addon">Serving</span>
+        <input disabled type="text" class="form-control" id="foodServingSize" value="{{> servings-partial}}">
+        <input type="hidden" id="foodServingCount" value="{{servingCount}}">
+        <span class="input-group-btn">
+          <button id="servingIncrease" class="btn" type="button"><i class="glyphicon glyphicon-triangle-top"></i></button>
+          <button id="servingDecrease" class="btn" type="button"><i class="glyphicon glyphicon-triangle-bottom"></i></button>
+        </span>
+      </div>
+      <br>
+      <button id="foodSave" type="submit" class="btn btn-default btn-block">Save Food</button>
+    </form>

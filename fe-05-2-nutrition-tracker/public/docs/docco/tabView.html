@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tabView.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="autocompleteSearch.html">
+                  autocompleteSearch.js
+                </a>
+              
+                
+                <a class="source" href="foodSearch.html">
+                  foodSearch.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTracker.html">
+                  nutritionTracker.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearch.html">
+                  recipeSearch.js
+                </a>
+              
+                
+                <a class="source" href="autocomplete.html">
+                  autocomplete.js
+                </a>
+              
+                
+                <a class="source" href="food.html">
+                  food.js
+                </a>
+              
+                
+                <a class="source" href="nutrition.html">
+                  nutrition.js
+                </a>
+              
+                
+                <a class="source" href="recipe.html">
+                  recipe.js
+                </a>
+              
+                
+                <a class="source" href="namespace.html">
+                  namespace.js
+                </a>
+              
+                
+                <a class="source" href="router.html">
+                  router.js
+                </a>
+              
+                
+                <a class="source" href="templates.html">
+                  templates.js
+                </a>
+              
+                
+                <a class="source" href="foodSearchView.html">
+                  foodSearchView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionEditorView.html">
+                  nutritionEditorView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTrackerView.html">
+                  nutritionTrackerView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionView.html">
+                  nutritionView.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearchView.html">
+                  recipeSearchView.js
+                </a>
+              
+                
+                <a class="source" href="startView.html">
+                  startView.js
+                </a>
+              
+                
+                <a class="source" href="tabView.html">
+                  tabView.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tabView.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/** Tab navigation
+ * @namespace  nt.Views
+ * @class nt.Views.TabNav
+ * @memberof! &lt;global&gt;
+ * @extends Backbone.View */</span>
+nt.Views.TabNav = Backbone.View.extend(<span class="hljs-comment">/** @lends nt.Views.TabNav# */</span>{
+
+    <span class="hljs-comment">/** Enable bootstrap tabs and equalize column heights
+     * @function  initialize
+     * @memberof  nt.Views.TabNav */</span>
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#app-tabs a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{
+            e.preventDefault();
+            $(<span class="hljs-keyword">this</span>).tab(<span class="hljs-string">'show'</span>);
+            $(<span class="hljs-string">'.row'</span>).eqHeights({child:<span class="hljs-string">'.eqHeights'</span>});
+        });
+
+    } <span class="hljs-comment">// initialize</span>
+
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

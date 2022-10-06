@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>nutritionTrackerView.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="autocompleteSearch.html">
+                  autocompleteSearch.js
+                </a>
+              
+                
+                <a class="source" href="foodSearch.html">
+                  foodSearch.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTracker.html">
+                  nutritionTracker.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearch.html">
+                  recipeSearch.js
+                </a>
+              
+                
+                <a class="source" href="autocomplete.html">
+                  autocomplete.js
+                </a>
+              
+                
+                <a class="source" href="food.html">
+                  food.js
+                </a>
+              
+                
+                <a class="source" href="nutrition.html">
+                  nutrition.js
+                </a>
+              
+                
+                <a class="source" href="recipe.html">
+                  recipe.js
+                </a>
+              
+                
+                <a class="source" href="namespace.html">
+                  namespace.js
+                </a>
+              
+                
+                <a class="source" href="router.html">
+                  router.js
+                </a>
+              
+                
+                <a class="source" href="templates.html">
+                  templates.js
+                </a>
+              
+                
+                <a class="source" href="foodSearchView.html">
+                  foodSearchView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionEditorView.html">
+                  nutritionEditorView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionTrackerView.html">
+                  nutritionTrackerView.js
+                </a>
+              
+                
+                <a class="source" href="nutritionView.html">
+                  nutritionView.js
+                </a>
+              
+                
+                <a class="source" href="recipeSearchView.html">
+                  recipeSearchView.js
+                </a>
+              
+                
+                <a class="source" href="startView.html">
+                  startView.js
+                </a>
+              
+                
+                <a class="source" href="tabView.html">
+                  tabView.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>nutritionTrackerView.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/** Tracker View
+ * @namespace  nt.Views
+ * @class nt.Views.Tracker
+ * @memberof! &lt;global&gt;
+ * @extends Backbone.View */</span>
+nt.Views.Tracker = Backbone.View.extend(<span class="hljs-comment">/** @lends nt.Views.Tracker# */</span>{
+
+    el: <span class="hljs-string">'#tracker'</span>,
+
+    trackedTemplate: Handlebars.Templates.tracked,
+
+    emptyMessage: <span class="hljs-string">'&lt;p&gt;No foods are being tracked.&lt;/p&gt;&lt;p&gt;Do a search and add something!&lt;/p&gt;'</span>,
+
+    emptyDate: <span class="hljs-string">'&lt;p&gt;There are no foods being tracked on this date.&lt;/p&gt;&lt;p&gt;Select another date or add a food.&lt;/p&gt;'</span>,
+
+    events: {
+        <span class="hljs-string">'click #dtBack'</span>: <span class="hljs-string">'dateBack'</span>,
+        <span class="hljs-string">'click #dtForward'</span>: <span class="hljs-string">'dateForward'</span>,
+        <span class="hljs-string">'click #dtDisplay'</span>: <span class="hljs-string">'dateDisplay'</span>,
+        <span class="hljs-string">'click .options a'</span>: <span class="hljs-string">'setOption'</span>,
+        <span class="hljs-string">'click .tracked-delete'</span>: <span class="hljs-string">'deleteFood'</span>,
+        <span class="hljs-string">'click .tracked-edit'</span>: <span class="hljs-string">'openFood'</span>,
+    },
+
+    <span class="hljs-comment">/** Setup Helpers, DOM ref, listener, datepicker, and fetch collection from localStorage */</span>
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        _.bindAll(<span class="hljs-keyword">this</span>, <span class="hljs-string">'sumCals'</span>, <span class="hljs-string">'sumFat'</span>, <span class="hljs-string">'sumCarbs'</span>, <span class="hljs-string">'sumProt'</span>);
+
+        Handlebars.registerHelper({
+          title: <span class="hljs-keyword">this</span>.title,
+          sumCals: <span class="hljs-keyword">this</span>.sumCals,
+          sumFat:  <span class="hljs-keyword">this</span>.sumFat,
+          sumCarbs: <span class="hljs-keyword">this</span>.sumCarbs,
+          sumProt: <span class="hljs-keyword">this</span>.sumProt,
+          show: <span class="hljs-keyword">this</span>.show
+        });
+
+        <span class="hljs-keyword">this</span>.$trackerResults = $(<span class="hljs-string">'#tracker-results'</span>);
+        <span class="hljs-keyword">this</span>.$dtp = $(<span class="hljs-string">'#dtPicker'</span>);
+        <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.collection, <span class="hljs-string">'update'</span>, <span class="hljs-keyword">this</span>.render);
+        <span class="hljs-keyword">this</span>.duration = moment.duration({<span class="hljs-string">'days'</span> : <span class="hljs-number">1</span>});
+        <span class="hljs-keyword">this</span>.initDatePicker();
+        <span class="hljs-keyword">this</span>.collection.fetch();
+
+    }, <span class="hljs-comment">// initialize</span>
+
+    <span class="hljs-comment">/** Display date tooltip if displayAll option is true */</span>
+    title: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">date</span>) </span>{
+        <span class="hljs-keyword">if</span>(nt.Option.displayAll) <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Handlebars.SafeString(<span class="hljs-string">'title="'</span> + date + <span class="hljs-string">'"'</span>);
+    }, <span class="hljs-comment">// all</span>
+
+    <span class="hljs-comment">/** Sum of calories */</span>
+    sumCals: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.collection.calculateSum(<span class="hljs-string">'valueCalories'</span>);
+    }, <span class="hljs-comment">// sumCals</span>
+
+    <span class="hljs-comment">/** Sum of fats */</span>
+    sumFat: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.collection.calculateSum(<span class="hljs-string">'valueTotalFat'</span>);
+    }, <span class="hljs-comment">// sumFat</span>
+
+    <span class="hljs-comment">/** Sum of carbs */</span>
+    sumCarbs: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.collection.calculateSum(<span class="hljs-string">'valueTotalCarb'</span>);
+    }, <span class="hljs-comment">// sumCarbs</span>
+
+    <span class="hljs-comment">/** Sum of proteins */</span>
+    sumProt: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.collection.calculateSum(<span class="hljs-string">'valueProteins'</span>);
+    }, <span class="hljs-comment">// sumProt</span>
+
+    <span class="hljs-comment">/** Show nutrition value by number of servings */</span>
+    show: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">attributeValue</span>) </span>{
+        <span class="hljs-keyword">var</span> servings = <span class="hljs-keyword">this</span>.attributes.servingCount;
+        <span class="hljs-keyword">var</span> showValue = <span class="hljs-number">0</span>;
+
+        <span class="hljs-keyword">if</span>(servings &gt; <span class="hljs-number">1</span>) {
+            showValue = attributeValue * servings;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>If it’s not a whole number, show only 2 decimal places</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(!<span class="hljs-built_in">Number</span>.isInteger(showValue))
+                <span class="hljs-keyword">return</span> <span class="hljs-built_in">Number</span>(showValue).toFixed(<span class="hljs-number">2</span>);
+            <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">return</span> showValue;
+
+        } <span class="hljs-comment">// if servings &gt; 1</span>
+        <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">return</span> attributeValue;
+
+    }, <span class="hljs-comment">// show</span>
+
+    <span class="hljs-comment">/** Check which render to run and update url route if in tracker view */</span>
+    render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> isTracker = $(<span class="hljs-string">'#tracker'</span>).hasClass(<span class="hljs-string">'active'</span>);
+
+        <span class="hljs-keyword">if</span>(nt.Option.displayAll) {
+            <span class="hljs-keyword">this</span>.renderAll();
+            <span class="hljs-keyword">if</span>(isTracker) nt.Router.Instance.navigate(<span class="hljs-string">'tracker/all'</span>);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">this</span>.renderDate();
+            <span class="hljs-keyword">if</span>(isTracker) nt.Router.Instance.navigate(<span class="hljs-string">'tracker/date/'</span> + nt.Option.trackerDate);
+        }
+
+    }, <span class="hljs-comment">// render</span>
+
+    <span class="hljs-comment">/** Render all */</span>
+    renderAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.$trackerResults.html(<span class="hljs-string">''</span>);
+
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.collection.length)
+            <span class="hljs-keyword">this</span>.$trackerResults.html( <span class="hljs-keyword">this</span>.emptyMessage );
+        <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">this</span>.$trackerResults.append( <span class="hljs-keyword">this</span>.trackedTemplate( <span class="hljs-keyword">this</span>.collection ));
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+
+    }, <span class="hljs-comment">// renderAll</span>
+
+    <span class="hljs-comment">/** Render the tracker collection by date */</span>
+    renderDate: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Clear previous list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.$trackerResults.html(<span class="hljs-string">''</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Check if the Collection is empty</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.collection.length)
+            <span class="hljs-keyword">this</span>.$trackerResults.html( <span class="hljs-keyword">this</span>.emptyMessage );
+         <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> group = <span class="hljs-keyword">this</span>.collection.getModelsByDate();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Check if there are models for the date chosen</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(!group.length)
+                <span class="hljs-keyword">this</span>.$trackerResults.html( <span class="hljs-keyword">this</span>.emptyDate );
+            <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">this</span>.$trackerResults.append( <span class="hljs-keyword">this</span>.trackedTemplate( group ));
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+
+    }, <span class="hljs-comment">// renderDate</span>
+
+    <span class="hljs-comment">/** Activate the date picker plugin */</span>
+    initDatePicker: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.$dtp.datetimepicker({
+            format: <span class="hljs-string">'MMMM D, YYYY'</span>,
+            defaultDate: nt.Option.trackerDate,
+            allowInputToggle: <span class="hljs-literal">true</span>
+        });
+
+        <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+        $(<span class="hljs-string">'#dtPicker'</span>).on(<span class="hljs-string">'dp.change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Grab the current date from the date picker and set the tracker date option</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            nt.Option.trackerDate = $(<span class="hljs-keyword">this</span>).data(<span class="hljs-string">'DateTimePicker'</span>).date().format(<span class="hljs-string">'YYYY-MM-DD'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Re-render the view to display only models with the date selected</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            self.render();
+        });
+
+    }, <span class="hljs-comment">// initDatePicker</span>
+
+    <span class="hljs-comment">/** Add a day to the current date */</span>
+    dateBack: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> currDate = <span class="hljs-keyword">this</span>.$dtp.data(<span class="hljs-string">'DateTimePicker'</span>).date();
+        <span class="hljs-keyword">var</span> backDate = currDate.subtract(<span class="hljs-keyword">this</span>.duration);
+        <span class="hljs-keyword">this</span>.$dtp.data(<span class="hljs-string">'DateTimePicker'</span>).date(backDate);
+
+    }, <span class="hljs-comment">// dateBack</span>
+
+    <span class="hljs-comment">/** Subtract a day from the current date */</span>
+    dateForward: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> currDate = <span class="hljs-keyword">this</span>.$dtp.data(<span class="hljs-string">'DateTimePicker'</span>).date();
+        <span class="hljs-keyword">var</span> forwardDate = currDate.add(<span class="hljs-keyword">this</span>.duration);
+        <span class="hljs-keyword">this</span>.$dtp.data(<span class="hljs-string">'DateTimePicker'</span>).date(forwardDate);
+
+    }, <span class="hljs-comment">// dateForward</span>
+
+    <span class="hljs-comment">/** Tracker display options */</span>
+    dateDisplay: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Bold the current option</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(nt.Option.displayAll) {
+            $(<span class="hljs-string">'#optAll'</span>).addClass(<span class="hljs-string">'bold'</span>);
+            $(<span class="hljs-string">'#optDate'</span>).removeClass(<span class="hljs-string">'bold'</span>);
+        } <span class="hljs-keyword">else</span> {
+            $(<span class="hljs-string">'#optAll'</span>).removeClass(<span class="hljs-string">'bold'</span>);
+            $(<span class="hljs-string">'#optDate'</span>).addClass(<span class="hljs-string">'bold'</span>);
+        }
+
+    }, <span class="hljs-comment">// dateDisplay</span>
+
+    <span class="hljs-comment">/** Set tracker display option and re-render view */</span>
+    setOption: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        e.preventDefault();
+
+        <span class="hljs-keyword">var</span> id = $(e.target).attr(<span class="hljs-string">'id'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Show/hide the date picker and navigation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(id === <span class="hljs-string">'optDate'</span>) {
+            $(<span class="hljs-string">'#dtContainer'</span>).show();
+            nt.Option.displayAll = <span class="hljs-literal">false</span>;
+        } <span class="hljs-keyword">else</span> {
+            $(<span class="hljs-string">'#dtContainer'</span>).hide();
+            nt.Option.displayAll = <span class="hljs-literal">true</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Re-render this view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.render();
+
+    }, <span class="hljs-comment">// setOption</span>
+
+    <span class="hljs-comment">/** Delete food model using id */</span>
+    deleteFood: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-keyword">var</span> id = $(e.target).data(<span class="hljs-string">'id'</span>);
+        <span class="hljs-keyword">var</span> food = <span class="hljs-keyword">this</span>.collection.get(id);
+        food.destroy();
+
+    }, <span class="hljs-comment">// deleteFood</span>
+
+    <span class="hljs-comment">/** Open nutrition view and style row in the tracker table */</span>
+    openFood: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-keyword">var</span> row = $(e.target).closest(<span class="hljs-string">'.tracked-row'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Open nutrition view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        nt.Views.nutrition.openNutrition(e);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Highlight row</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        row.css(<span class="hljs-string">'background-color'</span>, <span class="hljs-string">'#b8dec0'</span>).addClass(<span class="hljs-string">'highlight'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Hide the tracker delete icons</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.tracked-delete'</span>).hide();
+
+    } <span class="hljs-comment">// openFood</span>
+
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

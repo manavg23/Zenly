@@ -1,0 +1,13 @@
+    <h4 id="recipe-open">
+      <span class="label label-info"><i class="glyphicon glyphicon-info-sign"></i> Recipe Suggestions</span>
+    </h4>
+    {{#each items}}
+    <div class="item">
+      <h4><a class="item-nutrition" href="{{id}}" data-item="{{id}}">{{name}}</a></h4>
+      <h6>Cals: {{calories}} | Fat: {{fat}}g | Carbs: {{carbs}}g | Prot: {{protein}}g</h6>
+      <h6>Serving: {{servingSize}} {{servingUnit}}</h6>
+    </div>
+    {{/each}}
+    <footer class="logo">
+      <a href="http://www.nutritionix.com/api" target="_blank"><img src="images/nutritionix.png" alt="Powered By Nutritionix"></a>
+    </footer>

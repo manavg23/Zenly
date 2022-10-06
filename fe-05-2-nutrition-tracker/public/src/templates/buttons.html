@@ -1,0 +1,26 @@
+    <div class="buttons">
+      {{#if tracking}}
+        <p><button id="nutrition-track" type="button" class="btn btn-warning btn-xs btn-block">
+        <i class="glyphicon glyphicon-ok-circle"></i> Tracking
+        </button></p>
+        <button id="nutrition-close" type="button" class="btn btn-primary btn-sm">
+        <i class="glyphicon glyphicon-arrow-left"></i> Back
+        </button>
+        <button id="nutrition-add" type="button" class="btn btn-info btn-sm">
+        <i class="glyphicon glyphicon-pencil"></i> Edit
+        </button>
+        <button id="nutrition-remove" type="button" class="btn btn-danger btn-sm">
+        <i class="glyphicon glyphicon-remove"></i> Remove
+        </button>
+      {{else}}
+        <p><button type="button" class="btn btn-default btn-xs btn-block" disabled>
+        <i class="glyphicon glyphicon-ban-circle"></i> Not Tracking
+        </button></p>
+        <button id="nutrition-close" type="button" class="btn btn-primary btn-sm">
+        <i class="glyphicon glyphicon-arrow-left"></i> Back
+        </button>
+        <button id="nutrition-add" type="button" class="btn btn-success btn-sm">
+        <i class="glyphicon glyphicon-plus"></i> Add
+        </button>
+      {{/if}}
+    </div>
